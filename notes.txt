@@ -1,0 +1,122 @@
+Variablen
+Arithmetische Ausdrücke (erstmal nur +)
+Erstmal nur Int //Int und unsigned Int
+print
+read
+if 
+while
+RB, LB
+
+
+var x = 5;
+var y = x + 5;
+if (x == 5) {
+    print(y);
+}
+print(x);
+
+
+var x = 5;\nvar y = x + 5;\nif (x == 5) {\nprint(y);\n}\nprint(x);
+
+
+[(<Token.VAR: 1>, 0), (<Token.SETEQ: 5>, 0), 
+(<Token.NUM: 4>, '5'), (<Token.SEMICOLON: 14>, 0), 
+(<Token.VAR: 1>, 1), (<Token.SETEQ: 5>, 0), (<Token.ADD: 2>, 0), 
+(<Token.NUM: 4>, '5'), (<Token.SEMICOLON: 14>, 0), 
+(<Token.IF: 12>, 0), (<Token.LP: 8>, 0), (<Token.EQ: 3>, 0), 
+(<Token.NUM: 4>, '5'), (<Token.RP: 9>, 0), (<Token.LB: 10>, 0)]
+{0: 'x ', 1: 'y '}
+
+
+parser:
+
+next == v
+    
+
+--
+Grammar
+--
+
+Tokens:
+    VAR = 1
+    ADD = 2
+    EQ = 3
+    NUM = 4
+    SETEQ = 5
+    READ = 6
+    PRINT = 7
+    LP = 8
+    RP = 9
+    LB = 10
+    RB = 11
+    IF = 12
+    WHILE = 13
+    SEMICOLON = 14 // SC
+    IDENT = 15
+    SUB = 16
+    MUL = 17
+    DIV = 18
+    MOD = 19
+    LT = 20
+    LTE = 21
+    GT = 22
+    GTE = 23
+
+START -> S_List
+B -> LB S_List RB
+S_List -> S S_List | eps
+S -> VAR IDENT SETEQ E SC | IDENT SETEQ E SC | CONTROL B | PRINT LP E RP SC | B
+
+
+A -> IDENT | NUM | READ 
+E -> T EList
+EList -> eps | Arith_Line T Elist
+T -> F TList
+TList -> eps | Arith_Dot F TList
+F -> IDENT | NUM | READ | LP E RP
+
+Arith_Line -> + | -
+Arith_Dot -> * | / | %
+
+CONTROL -> IF LP COND RP | WHILE LP COND RP
+COND -> E COND'
+COND' -> EQ E | LT E | LTE E | GT E | GTE E
+
+START
+    first = LB, VAR, IDENT, IF, WHILE, PRINT 
+B
+    first = LB, VAR, IDENT, IF, WHILE, PRINT
+S_List
+    first = LB, VAR, IDENT, IF, WHILE, PRINT
+S
+    first = LB, VAR, IDENT, IF, WHILE, PRINT
+A
+    first = IDENT, NUM, READ
+E
+    first = IDENT, NUM, READ, LP
+    follow = SC, RP
+EList
+    first = SC, RP, ADD, SUB
+T
+    first = IDENT, NUM, READ, LP
+    follow = SC, RP, ADD, SUB, 
+TList
+    first = SC, RP, ADD, SUB, MUL, DIV, MOD
+F
+    first = IDENT, NUM, READ, LP
+Arith_Line
+    first = ADD, SUB
+Arith_Dot
+    first = MUL, DIV, MOD
+CONTROL
+    first = IF, WHILE
+COND
+    first = IDENT, NUM, READ, LP
+COND'
+    first = EQ, LT, LTE, GT, GTE
+
+
+Syntax Tree
+Node Type: 
+Set, Call, If, While, Ident, CONST, 
+EQ, LT, LTE, GT, GTE, newVar, Add, Sub, Mul, div, mod

@@ -1,0 +1,19 @@
+START -> S_List
+B -> LB S_List RB
+S_List -> S S_List | eps
+S -> VAR IDENT SETEQ E SC | IDENT SETEQ E SC | CONTROL B | PRINT LP E RP SC | B
+
+
+A -> IDENT | NUM | READ 
+E -> T EList
+EList -> eps | Arith_Line T Elist
+T -> F TList
+TList -> eps | Arith_Dot F TList
+F -> IDENT | NUM | READ | LP E RP
+
+Arith_Line -> + | -
+Arith_Dot -> * | / | %
+
+CONTROL -> IF LP COND RP | WHILE LP COND RP
+COND -> E COND'
+COND' -> EQ E | LT E | LTE E | GT E | GTE E
